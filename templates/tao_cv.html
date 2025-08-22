@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tạo CV - Job Assistant Agent</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="/"
+                    ><i class="fas fa-briefcase"></i> Job Assistant Agent</a
+                >
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tim-viec">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/viet-email"
+                                >Viết email ứng tuyển</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/danh-gia-cv"
+                                >Đánh giá CV</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/thong-ke-cong-ty"
+                                >Thống kê công ty</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/tao-cv">Tạo CV</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-10 offset-md-1">
+                    <h1 class="mb-4">
+                        <i class="fas fa-file-alt"></i> Tạo CV Chuyên Nghiệp
+                    </h1>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="cvBuilderForm">
+                                <!-- Thông tin cá nhân -->
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Thông tin cá nhân</h4>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label
+                                                for="fullName"
+                                                class="form-label"
+                                                >Họ và tên</label
+                                            >
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="fullName"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label
+                                                for="jobTitle"
+                                                class="form-label"
+                                                >Vị trí ứng tuyển</label
+                                            >
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="jobTitle"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label
+                                                for="email"
+                                                class="form-label"
+                                                >Email</label
+                                            >
+                                            <input
+                                                type="email"
+                                                class="form-control"
+                                                id="email"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label
+                                                for="phone"
+                                                class="form-label"
+                                                >Số điện thoại</label
+                                            >
+                                            <input
+                                                type="tel"
+                                                class="form-control"
+                                                id="phone"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label"
+                                            >Địa chỉ</label
+                                        >
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="address"
+                                        />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="summary" class="form-label"
+                                            >Tóm tắt bản thân</label
+                                        >
+                                        <textarea
+                                            class="form-control"
+                                            id="summary"
+                                            rows="3"
+                                            placeholder="Mô tả ngắn gọn về bản thân, mục tiêu nghề nghiệp và điểm mạnh của bạn..."
+                                        ></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Học vấn -->
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Học vấn</h4>
+                                    <div id="educationContainer">
+                                        <div
+                                            class="education-item border p-3 mb-3"
+                                        >
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Trường/Đại học</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control education-school"
+                                                    />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Chuyên ngành</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control education-degree"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Thời gian bắt
+                                                        đầu</label
+                                                    >
+                                                    <input
+                                                        type="month"
+                                                        class="form-control education-start"
+                                                    />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Thời gian kết
+                                                        thúc</label
+                                                    >
+                                                    <input
+                                                        type="month"
+                                                        class="form-control education-end"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                    >Thành tích</label
+                                                >
+                                                <textarea
+                                                    class="form-control education-description"
+                                                    rows="2"
+                                                ></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="addEducation"
+                                    >
+                                        <i class="fas fa-plus"></i> Thêm học vấn
+                                    </button>
+                                </div>
+
+                                <!-- Kinh nghiệm làm việc -->
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Kinh nghiệm làm việc</h4>
+                                    <div id="experienceContainer">
+                                        <div
+                                            class="experience-item border p-3 mb-3"
+                                        >
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Công ty</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control experience-company"
+                                                    />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Vị trí</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control experience-position"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Thời gian bắt
+                                                        đầu</label
+                                                    >
+                                                    <input
+                                                        type="month"
+                                                        class="form-control experience-start"
+                                                    />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Thời gian kết
+                                                        thúc</label
+                                                    >
+                                                    <input
+                                                        type="month"
+                                                        class="form-control experience-end"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label"
+                                                    >Mô tả công việc</label
+                                                >
+                                                <textarea
+                                                    class="form-control experience-description"
+                                                    rows="3"
+                                                ></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="addExperience"
+                                    >
+                                        <i class="fas fa-plus"></i> Thêm kinh
+                                        nghiệm
+                                    </button>
+                                </div>
+
+                                <!-- Kỹ năng -->
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Kỹ năng</h4>
+                                    <div id="skillsContainer">
+                                        <div class="skill-item border p-3 mb-3">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Tên kỹ năng</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control skill-name"
+                                                    />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Mức độ thành thạo
+                                                        (1-5)</label
+                                                    >
+                                                    <input
+                                                        type="range"
+                                                        class="form-range skill-level"
+                                                        min="1"
+                                                        max="5"
+                                                        value="3"
+                                                    />
+                                                    <div
+                                                        class="d-flex justify-content-between"
+                                                    >
+                                                        <span>Cơ bản</span>
+                                                        <span>Thành thạo</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="addSkill"
+                                    >
+                                        <i class="fas fa-plus"></i> Thêm kỹ năng
+                                    </button>
+                                </div>
+
+                                <!-- Chứng chỉ -->
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Chứng chỉ</h4>
+                                    <div id="certificateContainer">
+                                        <div
+                                            class="certificate-item border p-3 mb-3"
+                                        >
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Tên chứng chỉ</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control certificate-name"
+                                                    />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Tổ chức cấp</label
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="form-control certificate-issuer"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label class="form-label"
+                                                        >Ngày cấp</label
+                                                    >
+                                                    <input
+                                                        type="month"
+                                                        class="form-control certificate-date"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-primary"
+                                        id="addCertificate"
+                                    >
+                                        <i class="fas fa-plus"></i> Thêm chứng
+                                        chỉ
+                                    </button>
+                                </div>
+
+                                <!-- Mẫu CV -->
+                                <div class="mb-4">
+                                    <h4 class="mb-3">Chọn mẫu CV</h4>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="cvTemplate"
+                                                    id="template1"
+                                                    value="modern"
+                                                    checked
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="template1"
+                                                >
+                                                    <div class="card">
+                                                        <div
+                                                            class="card-body text-center"
+                                                        >
+                                                            <h6>Hiện đại</h6>
+                                                            <img
+                                                                src="{{ url_for('static', filename='images/modern-template.svg') }}"
+                                                                alt="Modern Template"
+                                                                class="img-fluid"
+                                                                style="
+                                                                    height: 150px;
+                                                                "
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="cvTemplate"
+                                                    id="template2"
+                                                    value="classic"
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="template2"
+                                                >
+                                                    <div class="card">
+                                                        <div
+                                                            class="card-body text-center"
+                                                        >
+                                                            <h6>Cổ điển</h6>
+                                                            <img
+                                                                src="{{ url_for('static', filename='images/classic-template.svg') }}"
+                                                                alt="Classic Template"
+                                                                class="img-fluid"
+                                                                style="
+                                                                    height: 150px;
+                                                                "
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="cvTemplate"
+                                                    id="template3"
+                                                    value="creative"
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="template3"
+                                                >
+                                                    <div class="card">
+                                                        <div
+                                                            class="card-body text-center"
+                                                        >
+                                                            <h6>Sáng tạo</h6>
+                                                            <img
+                                                                src="{{ url_for('static', filename='images/creative-template.svg') }}"
+                                                                alt="Creative Template"
+                                                                class="img-fluid"
+                                                                style="
+                                                                    height: 150px;
+                                                                "
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary btn-lg"
+                                    >
+                                        <i class="fas fa-file-download"></i> Tạo
+                                        CV
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div
+                        class="mt-4"
+                        id="loadingIndicator"
+                        style="display: none"
+                    >
+                        <div class="d-flex justify-content-center">
+                            <div
+                                class="spinner-border text-primary"
+                                role="status"
+                            >
+                                <span class="visually-hidden"
+                                    >Đang tạo CV...</span
+                                >
+                            </div>
+                        </div>
+                        <p class="text-center mt-2">
+                            Đang tạo CV chuyên nghiệp cho bạn...
+                        </p>
+                    </div>
+
+                    <div class="card mt-4" id="cvResult" style="display: none">
+                        <div
+                            class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+                        >
+                            <h5 class="mb-0">CV của bạn đã sẵn sàng</h5>
+                            <button
+                                class="btn btn-light btn-sm"
+                                id="downloadCV"
+                            >
+                                <i class="fas fa-download"></i> Tải xuống
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="cvPreview" class="border p-4"></div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Mẹo tạo CV nổi bật</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Sử dụng từ khóa liên quan đến vị trí ứng
+                                    tuyển
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Nhấn mạnh thành tích cụ thể với số liệu
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Sắp xếp thông tin theo thứ tự thời gian từ
+                                    gần đến xa
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Kiểm tra lỗi chính tả và ngữ pháp
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-light py-4 mt-5">
+            <div class="container text-center">
+                <p>Powered by LangGraph và OpenAI</p>
+                <p class="text-muted">Job Assistant Agent © 2023</p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Thêm học vấn
+                document
+                    .getElementById("addEducation")
+                    .addEventListener("click", function () {
+                        const container =
+                            document.getElementById("educationContainer");
+                        const newItem = document
+                            .querySelector(".education-item")
+                            .cloneNode(true);
+
+                        // Xóa giá trị đã nhập
+                        newItem
+                            .querySelectorAll("input, textarea")
+                            .forEach((input) => {
+                                input.value = "";
+                            });
+
+                        // Thêm nút xóa
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.className = "btn btn-sm btn-danger mt-2";
+                        deleteBtn.innerHTML =
+                            '<i class="fas fa-trash"></i> Xóa';
+                        deleteBtn.onclick = function () {
+                            container.removeChild(newItem);
+                        };
+                        newItem.appendChild(deleteBtn);
+
+                        container.appendChild(newItem);
+                    });
+
+                // Thêm kinh nghiệm
+                document
+                    .getElementById("addExperience")
+                    .addEventListener("click", function () {
+                        const container = document.getElementById(
+                            "experienceContainer"
+                        );
+                        const newItem = document
+                            .querySelector(".experience-item")
+                            .cloneNode(true);
+
+                        // Xóa giá trị đã nhập
+                        newItem
+                            .querySelectorAll("input, textarea")
+                            .forEach((input) => {
+                                input.value = "";
+                            });
+
+                        // Thêm nút xóa
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.className = "btn btn-sm btn-danger mt-2";
+                        deleteBtn.innerHTML =
+                            '<i class="fas fa-trash"></i> Xóa';
+                        deleteBtn.onclick = function () {
+                            container.removeChild(newItem);
+                        };
+                        newItem.appendChild(deleteBtn);
+
+                        container.appendChild(newItem);
+                    });
+
+                // Thêm kỹ năng
+                document
+                    .getElementById("addSkill")
+                    .addEventListener("click", function () {
+                        const container =
+                            document.getElementById("skillsContainer");
+                        const newItem = document
+                            .querySelector(".skill-item")
+                            .cloneNode(true);
+
+                        // Xóa giá trị đã nhập
+                        newItem.querySelectorAll("input").forEach((input) => {
+                            if (input.type === "range") {
+                                input.value = 3;
+                            } else {
+                                input.value = "";
+                            }
+                        });
+
+                        // Thêm nút xóa
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.className = "btn btn-sm btn-danger mt-2";
+                        deleteBtn.innerHTML =
+                            '<i class="fas fa-trash"></i> Xóa';
+                        deleteBtn.onclick = function () {
+                            container.removeChild(newItem);
+                        };
+                        newItem.appendChild(deleteBtn);
+
+                        container.appendChild(newItem);
+                    });
+
+                // Thêm chứng chỉ
+                document
+                    .getElementById("addCertificate")
+                    .addEventListener("click", function () {
+                        const container = document.getElementById(
+                            "certificateContainer"
+                        );
+                        const newItem = document
+                            .querySelector(".certificate-item")
+                            .cloneNode(true);
+
+                        // Xóa giá trị đã nhập
+                        newItem.querySelectorAll("input").forEach((input) => {
+                            input.value = "";
+                        });
+
+                        // Thêm nút xóa
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.className = "btn btn-sm btn-danger mt-2";
+                        deleteBtn.innerHTML =
+                            '<i class="fas fa-trash"></i> Xóa';
+                        deleteBtn.onclick = function () {
+                            container.removeChild(newItem);
+                        };
+                        newItem.appendChild(deleteBtn);
+
+                        container.appendChild(newItem);
+                    });
+
+                // Xử lý form submit
+                document
+                    .getElementById("cvBuilderForm")
+                    .addEventListener("submit", function (e) {
+                        e.preventDefault();
+
+                        // Hiển thị loading
+                        document.getElementById(
+                            "loadingIndicator"
+                        ).style.display = "block";
+                        document.getElementById("cvResult").style.display =
+                            "none";
+
+                        // Thu thập dữ liệu từ form
+                        const formData = {
+                            personal_info: {
+                                full_name:
+                                    document.getElementById("fullName").value,
+                                job_title:
+                                    document.getElementById("jobTitle").value,
+                                email: document.getElementById("email").value,
+                                phone: document.getElementById("phone").value,
+                                address:
+                                    document.getElementById("address").value,
+                                summary:
+                                    document.getElementById("summary").value,
+                            },
+                            education: [],
+                            experience: [],
+                            skills: [],
+                            certificates: [],
+                            template: document.querySelector(
+                                'input[name="cvTemplate"]:checked'
+                            ).value,
+                        };
+
+                        // Thu thập thông tin học vấn
+                        document
+                            .querySelectorAll(".education-item")
+                            .forEach((item) => {
+                                formData.education.push({
+                                    school: item.querySelector(
+                                        ".education-school"
+                                    ).value,
+                                    degree: item.querySelector(
+                                        ".education-degree"
+                                    ).value,
+                                    start_date:
+                                        item.querySelector(".education-start")
+                                            .value,
+                                    end_date:
+                                        item.querySelector(".education-end")
+                                            .value,
+                                    description: item.querySelector(
+                                        ".education-description"
+                                    ).value,
+                                });
+                            });
+
+                        // Thu thập thông tin kinh nghiệm
+                        document
+                            .querySelectorAll(".experience-item")
+                            .forEach((item) => {
+                                formData.experience.push({
+                                    company: item.querySelector(
+                                        ".experience-company"
+                                    ).value,
+                                    position: item.querySelector(
+                                        ".experience-position"
+                                    ).value,
+                                    start_date:
+                                        item.querySelector(".experience-start")
+                                            .value,
+                                    end_date:
+                                        item.querySelector(".experience-end")
+                                            .value,
+                                    description: item.querySelector(
+                                        ".experience-description"
+                                    ).value,
+                                });
+                            });
+
+                        // Thu thập thông tin kỹ năng
+                        document
+                            .querySelectorAll(".skill-item")
+                            .forEach((item) => {
+                                formData.skills.push({
+                                    name: item.querySelector(".skill-name")
+                                        .value,
+                                    level: item.querySelector(".skill-level")
+                                        .value,
+                                });
+                            });
+
+                        // Thu thập thông tin chứng chỉ
+                        document
+                            .querySelectorAll(".certificate-item")
+                            .forEach((item) => {
+                                formData.certificates.push({
+                                    name: item.querySelector(
+                                        ".certificate-name"
+                                    ).value,
+                                    issuer: item.querySelector(
+                                        ".certificate-issuer"
+                                    ).value,
+                                    date: item.querySelector(
+                                        ".certificate-date"
+                                    ).value,
+                                });
+                            });
+
+                        // Gọi API
+                        fetch("http://127.0.0.1:8501/api/tao-cv", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(formData),
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                // Ẩn loading
+                                document.getElementById(
+                                    "loadingIndicator"
+                                ).style.display = "none";
+                                document.getElementById(
+                                    "cvResult"
+                                ).style.display = "block";
+
+                                // Hiển thị kết quả
+                                if (data && data.html_content) {
+                                    document.getElementById(
+                                        "cvPreview"
+                                    ).innerHTML = data.html_content;
+                                } else {
+                                    document.getElementById(
+                                        "cvPreview"
+                                    ).innerHTML =
+                                        '<div class="alert alert-warning">Không thể tạo CV. Vui lòng thử lại với thông tin khác.</div>';
+                                }
+                            })
+                            .catch((error) => {
+                                console.error("Error:", error);
+                                document.getElementById(
+                                    "loadingIndicator"
+                                ).style.display = "none";
+                                document.getElementById(
+                                    "cvResult"
+                                ).style.display = "block";
+                                document.getElementById("cvPreview").innerHTML =
+                                    '<div class="alert alert-danger">Có lỗi xảy ra khi tạo CV. Vui lòng thử lại sau.</div>';
+                            });
+                    });
+
+                // Xử lý tải xuống CV
+                document
+                    .getElementById("downloadCV")
+                    .addEventListener("click", function () {
+                        const cvContent =
+                            document.getElementById("cvPreview").innerHTML;
+
+                        // Tạo HTML đầy đủ cho CV
+                        const fullHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>CV - ${
+                        document.getElementById("fullName").value
+                    }</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        ${cvContent}
+                    </div>
+                </body>
+                </html>
+                `;
+
+                        // Tạo blob và link tải xuống
+                        const blob = new Blob([fullHTML], {
+                            type: "text/html",
+                        });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `CV-${document
+                            .getElementById("fullName")
+                            .value.replace(/\s+/g, "-")}.html`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Thống Kê Công Ty - Job Assistant Agent</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="/"
+                    ><i class="fas fa-briefcase"></i> Job Assistant Agent</a
+                >
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tim-viec">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/viet-email"
+                                >Viết email ứng tuyển</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/danh-gia-cv"
+                                >Đánh giá CV</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/thong-ke-cong-ty"
+                                >Thống kê công ty</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tao-cv">Tạo CV</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <h1 class="mb-4">
+                        <i class="fas fa-chart-bar"></i> Thống Kê Công Ty
+                    </h1>
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="companyForm">
+                                <div class="mb-3">
+                                    <label for="companyName" class="form-label"
+                                        >Tên công ty</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="companyName"
+                                        placeholder="VD: FPT Software, Viettel..."
+                                        required
+                                    />
+                                </div>
+                                <div class="d-grid">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        id="analyzeButton"
+                                    >
+                                        <i class="fas fa-search"></i> Phân tích
+                                        công ty
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div
+                        class="mt-4"
+                        id="loadingIndicator"
+                        style="display: none"
+                    >
+                        <div class="d-flex justify-content-center">
+                            <div
+                                class="spinner-border text-primary"
+                                role="status"
+                            >
+                                <span class="visually-hidden"
+                                    >Đang phân tích...</span
+                                >
+                            </div>
+                        </div>
+                        <p class="text-center mt-2">
+                            Đang thu thập và phân tích thông tin về công ty...
+                        </p>
+                    </div>
+
+                    <div id="companyResult" style="display: none">
+                        <div class="card mt-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0" id="companyTitle">
+                                    Thông tin công ty
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4" id="companyOverview"></div>
+
+                                <div class="mb-4">
+                                    <h5>Thông tin cơ bản</h5>
+                                    <table class="table table-bordered">
+                                        <tbody id="companyInfo"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">
+                                    Phân tích môi trường làm việc
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <h6>Điểm mạnh</h6>
+                                        <ul
+                                            id="companyStrengths"
+                                            class="list-group list-group-flush"
+                                        ></ul>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <h6>Điểm yếu</h6>
+                                        <ul
+                                            id="companyWeaknesses"
+                                            class="list-group list-group-flush"
+                                        ></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Đánh giá từ nhân viên</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <canvas id="ratingChart"></canvas>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="employeeReviews"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Cơ hội nghề nghiệp</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="careerOpportunities"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                Mẹo đánh giá công ty trước khi ứng tuyển
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Tìm hiểu về văn hóa và giá trị cốt lõi của
+                                    công ty
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Đọc đánh giá từ nhân viên hiện tại và cựu
+                                    nhân viên
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Nghiên cứu về cơ hội thăng tiến và phát
+                                    triển
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Tìm hiểu về chế độ phúc lợi và môi trường
+                                    làm việc
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-light py-4 mt-5">
+            <div class="container text-center">
+                <p>Powered by LangGraph và OpenAI</p>
+                <p class="text-muted">Job Assistant Agent © 2023</p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const companyForm = document.getElementById("companyForm");
+                const loadingIndicator =
+                    document.getElementById("loadingIndicator");
+                const companyResult = document.getElementById("companyResult");
+                let ratingChart = null;
+
+                companyForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    // Hiển thị loading
+                    loadingIndicator.style.display = "block";
+                    companyResult.style.display = "none";
+
+                    // Lấy dữ liệu từ form
+                    const companyName =
+                        document.getElementById("companyName").value;
+
+                    // Gọi API
+                    fetch("http://127.0.0.1:8501/api/thong-ke-cong-ty", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            company_name: companyName,
+                        }),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // Ẩn loading
+                            loadingIndicator.style.display = "none";
+                            companyResult.style.display = "block";
+
+                            // Hiển thị kết quả
+                            if (data) {
+                                // Cập nhật tiêu đề
+                                document.getElementById(
+                                    "companyTitle"
+                                ).textContent = data.name || companyName;
+
+                                // Hiển thị tổng quan
+                                const companyOverview =
+                                    document.getElementById("companyOverview");
+                                companyOverview.innerHTML =
+                                    data.overview ||
+                                    "Không có thông tin tổng quan.";
+
+                                // Hiển thị thông tin cơ bản
+                                const companyInfo =
+                                    document.getElementById("companyInfo");
+                                companyInfo.innerHTML = "";
+
+                                // Thêm các thông tin cơ bản
+                                const infoItems = [
+                                    {
+                                        label: "Ngành nghề",
+                                        value: data.industry,
+                                    },
+                                    { label: "Quy mô", value: data.size },
+                                    {
+                                        label: "Trụ sở chính",
+                                        value: data.headquarters,
+                                    },
+                                    {
+                                        label: "Năm thành lập",
+                                        value: data.founded,
+                                    },
+                                    { label: "Website", value: data.website },
+                                ];
+
+                                infoItems.forEach((item) => {
+                                    if (item.value) {
+                                        const row =
+                                            document.createElement("tr");
+                                        row.innerHTML = `
+                                    <td class="fw-bold" style="width: 30%">${item.label}</td>
+                                    <td>${item.value}</td>
+                                `;
+                                        companyInfo.appendChild(row);
+                                    }
+                                });
+
+                                // Hiển thị điểm mạnh
+                                const companyStrengths =
+                                    document.getElementById("companyStrengths");
+                                companyStrengths.innerHTML = "";
+                                if (
+                                    data.strengths &&
+                                    data.strengths.length > 0
+                                ) {
+                                    data.strengths.forEach((strength) => {
+                                        const li = document.createElement("li");
+                                        li.className = "list-group-item";
+                                        li.innerHTML = `<i class="fas fa-plus-circle text-success me-2"></i> ${strength}`;
+                                        companyStrengths.appendChild(li);
+                                    });
+                                } else {
+                                    companyStrengths.innerHTML =
+                                        '<li class="list-group-item">Không có thông tin</li>';
+                                }
+
+                                // Hiển thị điểm yếu
+                                const companyWeaknesses =
+                                    document.getElementById(
+                                        "companyWeaknesses"
+                                    );
+                                companyWeaknesses.innerHTML = "";
+                                if (
+                                    data.weaknesses &&
+                                    data.weaknesses.length > 0
+                                ) {
+                                    data.weaknesses.forEach((weakness) => {
+                                        const li = document.createElement("li");
+                                        li.className = "list-group-item";
+                                        li.innerHTML = `<i class="fas fa-minus-circle text-danger me-2"></i> ${weakness}`;
+                                        companyWeaknesses.appendChild(li);
+                                    });
+                                } else {
+                                    companyWeaknesses.innerHTML =
+                                        '<li class="list-group-item">Không có thông tin</li>';
+                                }
+
+                                // Hiển thị đánh giá từ nhân viên
+                                const employeeReviews =
+                                    document.getElementById("employeeReviews");
+                                employeeReviews.innerHTML = "";
+                                if (data.reviews && data.reviews.length > 0) {
+                                    const reviewsList =
+                                        document.createElement("ul");
+                                    reviewsList.className = "list-group";
+
+                                    data.reviews.forEach((review) => {
+                                        const li = document.createElement("li");
+                                        li.className = "list-group-item";
+                                        li.innerHTML = `
+                                    <div class="mb-1"><strong>${
+                                        review.position || "Nhân viên"
+                                    }</strong></div>
+                                    <div class="mb-1">
+                                        ${"★".repeat(
+                                            review.rating || 0
+                                        )}${"☆".repeat(
+                                            5 - (review.rating || 0)
+                                        )}
+                                    </div>
+                                    <div>${review.comment || ""}</div>
+                                `;
+                                        reviewsList.appendChild(li);
+                                    });
+
+                                    employeeReviews.appendChild(reviewsList);
+                                } else {
+                                    employeeReviews.innerHTML =
+                                        "<p>Không có đánh giá từ nhân viên.</p>";
+                                }
+
+                                // Hiển thị biểu đồ đánh giá
+                                const ctx = document
+                                    .getElementById("ratingChart")
+                                    .getContext("2d");
+
+                                // Hủy biểu đồ cũ nếu có
+                                if (ratingChart) {
+                                    ratingChart.destroy();
+                                }
+
+                                // Tạo dữ liệu cho biểu đồ
+                                const ratingCategories = [
+                                    "Môi trường làm việc",
+                                    "Lương thưởng",
+                                    "Cân bằng công việc",
+                                    "Cơ hội thăng tiến",
+                                    "Văn hóa công ty",
+                                ];
+
+                                const ratingValues = [
+                                    data.work_environment_rating || 0,
+                                    data.salary_rating || 0,
+                                    data.work_life_balance_rating || 0,
+                                    data.career_opportunities_rating || 0,
+                                    data.culture_rating || 0,
+                                ];
+
+                                // Tạo biểu đồ mới
+                                ratingChart = new Chart(ctx, {
+                                    type: "radar",
+                                    data: {
+                                        labels: ratingCategories,
+                                        datasets: [
+                                            {
+                                                label: "Đánh giá (thang điểm 5)",
+                                                data: ratingValues,
+                                                backgroundColor:
+                                                    "rgba(54, 162, 235, 0.2)",
+                                                borderColor:
+                                                    "rgba(54, 162, 235, 1)",
+                                                pointBackgroundColor:
+                                                    "rgba(54, 162, 235, 1)",
+                                                pointBorderColor: "#fff",
+                                                pointHoverBackgroundColor:
+                                                    "#fff",
+                                                pointHoverBorderColor:
+                                                    "rgba(54, 162, 235, 1)",
+                                            },
+                                        ],
+                                    },
+                                    options: {
+                                        scales: {
+                                            r: {
+                                                angleLines: {
+                                                    display: true,
+                                                },
+                                                suggestedMin: 0,
+                                                suggestedMax: 5,
+                                            },
+                                        },
+                                    },
+                                });
+
+                                // Hiển thị cơ hội nghề nghiệp
+                                const careerOpportunities =
+                                    document.getElementById(
+                                        "careerOpportunities"
+                                    );
+                                if (
+                                    data.career_opportunities &&
+                                    data.career_opportunities.length > 0
+                                ) {
+                                    let opportunitiesHTML =
+                                        '<ul class="list-group list-group-flush">';
+
+                                    data.career_opportunities.forEach(
+                                        (opportunity) => {
+                                            opportunitiesHTML += `
+                                    <li class="list-group-item">
+                                        <i class="fas fa-briefcase text-primary me-2"></i> ${opportunity}
+                                    </li>
+                                `;
+                                        }
+                                    );
+
+                                    opportunitiesHTML += "</ul>";
+                                    careerOpportunities.innerHTML =
+                                        opportunitiesHTML;
+                                } else {
+                                    careerOpportunities.innerHTML =
+                                        "<p>Không có thông tin về cơ hội nghề nghiệp.</p>";
+                                }
+                            } else {
+                                // Hiển thị thông báo lỗi
+                                companyResult.innerHTML =
+                                    '<div class="alert alert-warning">Không thể tìm thấy thông tin về công ty. Vui lòng thử lại với tên công ty khác.</div>';
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                            loadingIndicator.style.display = "none";
+                            companyResult.style.display = "block";
+                            companyResult.innerHTML =
+                                '<div class="alert alert-danger">Có lỗi xảy ra khi phân tích thông tin công ty. Vui lòng thử lại sau.</div>';
+                        });
+                });
+            });
+        </script>
+    </body>
+</html>

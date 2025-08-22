@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Viết Email Ứng Tuyển - Job Assistant Agent</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        />
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="/"
+                    ><i class="fas fa-briefcase"></i> Job Assistant Agent</a
+                >
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tim-viec">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/viet-email"
+                                >Viết email ứng tuyển</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/danh-gia-cv"
+                                >Đánh giá CV</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/thong-ke-cong-ty"
+                                >Thống kê công ty</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tao-cv">Tạo CV</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <h1 class="mb-4">
+                        <i class="fas fa-envelope"></i> Viết Email Ứng Tuyển
+                    </h1>
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="emailForm">
+                                <div class="mb-3">
+                                    <label for="jobPosition" class="form-label"
+                                        >Vị trí công việc</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="jobPosition"
+                                        placeholder="VD: Frontend Developer, Marketing Manager..."
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="companyName" class="form-label"
+                                        >Tên công ty</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="companyName"
+                                        placeholder="VD: FPT Software, Viettel..."
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label
+                                        for="skillsExperience"
+                                        class="form-label"
+                                        >Kỹ năng và kinh nghiệm của bạn</label
+                                    >
+                                    <textarea
+                                        class="form-control"
+                                        id="skillsExperience"
+                                        rows="4"
+                                        placeholder="Mô tả kỹ năng và kinh nghiệm liên quan đến vị trí..."
+                                        required
+                                    ></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        id="generateButton"
+                                    >
+                                        <i class="fas fa-magic"></i> Tạo email
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div
+                        class="mt-4"
+                        id="loadingIndicator"
+                        style="display: none"
+                    >
+                        <div class="d-flex justify-content-center">
+                            <div
+                                class="spinner-border text-primary"
+                                role="status"
+                            >
+                                <span class="visually-hidden"
+                                    >Đang tạo email...</span
+                                >
+                            </div>
+                        </div>
+                        <p class="text-center mt-2">
+                            Đang tạo email ứng tuyển chuyên nghiệp...
+                        </p>
+                    </div>
+
+                    <div
+                        class="card mt-4"
+                        id="emailResult"
+                        style="display: none"
+                    >
+                        <div
+                            class="card-header d-flex justify-content-between align-items-center"
+                        >
+                            <h5 class="mb-0">Email ứng tuyển của bạn</h5>
+                            <button
+                                class="btn btn-sm btn-outline-primary"
+                                id="copyButton"
+                            >
+                                <i class="fas fa-copy"></i> Sao chép
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div
+                                id="emailContent"
+                                class="border p-3 bg-light"
+                            ></div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                Mẹo viết email ứng tuyển hiệu quả
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Đề cập đến tên công ty và vị trí cụ thể
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Nhấn mạnh kỹ năng phù hợp với yêu cầu công
+                                    việc
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Giữ email ngắn gọn, súc tích và chuyên
+                                    nghiệp
+                                </li>
+                                <li class="list-group-item">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i>
+                                    Kiểm tra lỗi chính tả và ngữ pháp trước khi
+                                    gửi
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="bg-light py-4 mt-5">
+            <div class="container text-center">
+                <p>Powered by LangGraph và OpenAI</p>
+                <p class="text-muted">Job Assistant Agent © 2023</p>
+            </div>
+        </footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const emailForm = document.getElementById("emailForm");
+                const loadingIndicator =
+                    document.getElementById("loadingIndicator");
+                const emailResult = document.getElementById("emailResult");
+                const emailContent = document.getElementById("emailContent");
+                const copyButton = document.getElementById("copyButton");
+
+                emailForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    // Hiển thị loading
+                    loadingIndicator.style.display = "block";
+                    emailResult.style.display = "none";
+
+                    // Lấy dữ liệu từ form
+                    const jobPosition =
+                        document.getElementById("jobPosition").value;
+                    const companyName =
+                        document.getElementById("companyName").value;
+                    const skillsExperience =
+                        document.getElementById("skillsExperience").value;
+
+                    // Gọi API
+                    fetch("http://127.0.0.1:8501/api/viet-email", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            job_position: jobPosition,
+                            company_name: companyName,
+                            skills_experience: skillsExperience,
+                        }),
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            // Ẩn loading
+                            loadingIndicator.style.display = "none";
+                            emailResult.style.display = "block";
+
+                            // Hiển thị kết quả
+                            if (data && data.email) {
+                                // Thay thế \n bằng <br> để hiển thị xuống dòng
+                                emailContent.innerHTML = data.email.replace(
+                                    /\n/g,
+                                    "<br>"
+                                );
+                            } else {
+                                emailContent.innerHTML =
+                                    '<div class="alert alert-warning">Không thể tạo email. Vui lòng thử lại với thông tin khác.</div>';
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                            loadingIndicator.style.display = "none";
+                            emailResult.style.display = "block";
+                            emailContent.innerHTML =
+                                '<div class="alert alert-danger">Có lỗi xảy ra khi tạo email. Vui lòng thử lại sau.</div>';
+                        });
+                });
+
+                // Xử lý sao chép email
+                copyButton.addEventListener("click", function () {
+                    const emailText = emailContent.innerText;
+
+                    navigator.clipboard
+                        .writeText(emailText)
+                        .then(function () {
+                            // Thông báo đã sao chép
+                            const originalText = copyButton.innerHTML;
+                            copyButton.innerHTML =
+                                '<i class="fas fa-check"></i> Đã sao chép';
+                            copyButton.classList.remove("btn-outline-primary");
+                            copyButton.classList.add("btn-success");
+
+                            // Khôi phục nút sau 2 giây
+                            setTimeout(function () {
+                                copyButton.innerHTML = originalText;
+                                copyButton.classList.remove("btn-success");
+                                copyButton.classList.add("btn-outline-primary");
+                            }, 2000);
+                        })
+                        .catch(function (err) {
+                            console.error("Không thể sao chép: ", err);
+                        });
+                });
+            });
+        </script>
+    </body>
+</html>
