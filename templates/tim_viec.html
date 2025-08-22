@@ -292,82 +292,9 @@
                 });
 
                 function displayResults(data) {
-                    jobResults.innerHTML = "";
+                    jobResults.innerHTML = data.result;
 
-                    if (!data || !data.jobs || data.jobs.length === 0) {
-                        jobResults.innerHTML =
-                            '<div class="alert alert-info">Không tìm thấy công việc phù hợp. Vui lòng thử lại với các tiêu chí khác.</div>';
-                        return;
-                    }
-
-                    data.jobs.forEach((job, index) => {
-                        const jobCard = document.createElement("div");
-                        jobCard.className = "card mb-3";
-
-                        const cardBody = document.createElement("div");
-                        cardBody.className = "card-body";
-
-                        const title = document.createElement("h5");
-                        title.className = "card-title";
-                        title.textContent = job.title || "Không có tiêu đề";
-
-                        const company = document.createElement("h6");
-                        company.className = "card-subtitle mb-2 text-muted";
-                        company.innerHTML = `<i class="fas fa-building"></i> ${
-                            job.company || "Không có thông tin công ty"
-                        }`;
-
-                        const details = document.createElement("div");
-                        details.className = "mt-3";
-                        details.innerHTML = `
-                        <p><i class="fas fa-map-marker-alt"></i> <strong>Địa điểm:</strong> ${
-                            job.location || "Không có thông tin"
-                        }</p>
-                        <p><i class="fas fa-money-bill-wave"></i> <strong>Mức lương:</strong> ${
-                            job.salary || "Không có thông tin"
-                        }</p>
-                        <p><i class="fas fa-briefcase"></i> <strong>Loại công việc:</strong> ${
-                            job.job_type || "Không có thông tin"
-                        }</p>
-                        <p><i class="fas fa-clock"></i> <strong>Kinh nghiệm:</strong> ${
-                            job.experience || "Không có thông tin"
-                        }</p>
-                    `;
-
-                        const description = document.createElement("div");
-                        description.className = "mt-3";
-                        description.innerHTML = `
-                        <h6><strong>Mô tả công việc:</strong></h6>
-                        <p>${job.description || "Không có mô tả"}</p>
-                    `;
-
-                        const requirements = document.createElement("div");
-                        requirements.className = "mt-3";
-                        requirements.innerHTML = `
-                        <h6><strong>Yêu cầu:</strong></h6>
-                        <p>${job.requirements || "Không có thông tin"}</p>
-                    `;
-
-                        const applyButton = document.createElement("a");
-                        applyButton.href = "#";
-                        applyButton.className = "btn btn-primary mt-3";
-                        applyButton.innerHTML =
-                            '<i class="fas fa-paper-plane"></i> Ứng tuyển ngay';
-                        applyButton.onclick = function (e) {
-                            e.preventDefault();
-                            alert("Chức năng ứng tuyển đang được phát triển!");
-                        };
-
-                        cardBody.appendChild(title);
-                        cardBody.appendChild(company);
-                        cardBody.appendChild(details);
-                        cardBody.appendChild(description);
-                        cardBody.appendChild(requirements);
-                        cardBody.appendChild(applyButton);
-
-                        jobCard.appendChild(cardBody);
-                        jobResults.appendChild(jobCard);
-                    });
+                    
                 }
             });
         </script>

@@ -5,6 +5,9 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langgraph.graph import StateGraph, END
 from pydantic import BaseModel
+from langchain_core.tools import tool
+from pydantic import BaseModel, Field
+from ddgs import DDGS
 from agent.utils import get_openai_api_key, extract_json_from_text, format_job_results, format_company_results
 
 # Định nghĩa các trạng thái
@@ -13,6 +16,19 @@ class AgentState(TypedDict):
     context: Dict[str, Any]
     response: str
     next_step: str
+
+
+class WebSearchInput(BaseModel):
+    input:str = Field(description="Nội dung cần tìm kiếm trên internet để cập nhật thêm thông tin trả lời.")
+
+@tool("web_search", args_schema=WebSearchInput, return_direct=True)
+def web_search(input: str):
+    """
+    Tìm kiếm thông tin trên internet dựa vào nội dung người dùng cung cấp.
+    """
+    results = DDGS().text(input, max_results=5, region="vn-vi")
+    return results
+
 
 # Định nghĩa các module chức năng
 class JobModule:
@@ -24,7 +40,6 @@ class JobModule:
         """Tìm kiếm công việc phù hợp dựa trên mô tả và yêu cầu"""
         prompt = PromptTemplate.from_template(
             """Bạn là một trợ lý tìm việc chuyên nghiệp. Hãy giúp tôi tìm kiếm công việc phù hợp dựa trên thông tin sau:
-            
             Mô tả công việc: {job_description}
             Mức lương mong muốn: {salary}
             Địa điểm: {location}
@@ -37,7 +52,12 @@ class JobModule:
             4. Yêu cầu chính
             5. Lý do phù hợp
             
-            Trả lời bằng tiếng Việt và định dạng rõ ràng."""
+            Trả lời bằng tiếng Việt và định dạng rõ ràng.
+            Yêu cầu: trả về kết quả dưới dạng HTML (không được hiển thị các text kiểu thẻ trong html, nội dung phải chính xác chỉn chu từng câu chữ do kết quả trả về sẽ được tôi dùng để hiển thị trực tiếp lên cho người dùng đọc)
+            , gạch thành các ý, format giao diện dễ đọc, có kết luận cuối cùng, hightline vào các ý chính, màu sắc của tiêu đề và nội dung bên trong không được trùng nhau
+            
+            Luôn trả về dạng HTML
+            """
         )
         
         formatted_prompt = prompt.format(
@@ -46,6 +66,11 @@ class JobModule:
             location=location,
             experience=experience
         )
+        
+        # react_agent = self.llm.bind_tools([web_search])
+        
+        # response = react_agent.invoke(formatted_prompt)
+        
         
         response = self.llm.invoke(formatted_prompt)
         return response.content
